@@ -52,7 +52,7 @@ public class WebController {
   }
 
   /**
-   * Search the Flag repo and returns the appropriate results
+   *  Search the Flag repo and returns the appropriate results
    *   
    */
   @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
@@ -61,8 +61,11 @@ public class WebController {
     try {
       LOGGER.info("Request received to search the flag details!!");
       List<CountryDTO> searchResult = flagService.searchFlag(keyword);
-      responseDTO.setResponse(searchResult);
-      responseDTO.setReturnCode(ReturnCode.SUCCESS);
+      if (searchResult != null && searchResult.size() > 0) {
+        responseDTO.setResponse(searchResult);
+        responseDTO.setReturnCode(ReturnCode.SUCCESS);
+      } else
+        responseDTO.setReturnCode(ReturnCode.DATANOTFOUND);
     } catch (Exception e) {
       responseDTO.setReturnCode(ReturnCode.ERROR);
     }
@@ -83,8 +86,9 @@ public class WebController {
         Map<String, Integer> sortedMap = countryMetrics.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         responseDTO.setResponse(sortedMap);
-      }
-      responseDTO.setReturnCode(ReturnCode.SUCCESS);
+        responseDTO.setReturnCode(ReturnCode.SUCCESS);
+      } else
+        responseDTO.setReturnCode(ReturnCode.DATANOTFOUND);
     } catch (Exception e) {
       responseDTO.setReturnCode(ReturnCode.ERROR);
     }
