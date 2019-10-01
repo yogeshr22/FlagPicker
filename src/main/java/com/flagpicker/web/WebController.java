@@ -52,7 +52,7 @@ public class WebController {
   }
 
   /**
-   * Captures the Flag details, country and continent
+   * Search the Flag repo and returns the appropriate results
    *   
    */
   @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
@@ -70,7 +70,7 @@ public class WebController {
   }
 
   /**
-   * Captures the Flag details, country and continent
+   * Returns the Flag Metrics
    *   
    */
   @RequestMapping(value = "/metrics", method = RequestMethod.GET, produces = "application/json")
