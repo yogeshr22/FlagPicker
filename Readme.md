@@ -1,9 +1,7 @@
 Below are the service URLs and their features
-1)	Upload Service (POST, application/json)
-  a)	http://localhost:8080/api/uploadflags
-  	The application allows a user to upload the flag details in the mentioned JSON format
-  	The user can keep on adding the continents to the application
-    If any invalid input provided, the system will not accept the data
+1)	List All Flag Details Service (POST, application/json)
+  a)	http://localhost:8080/api/all
+  	The application allows a user to fetch all of the flag details in the mentioned JSON format
 2)	Search Service (GET)
   a)	http://localhost:8080/api/search?keyword=UK
     The user is able to search the flag details by passing either the continent or country name.
@@ -17,8 +15,6 @@ Below are the service URLs and their features
 Coverage Of work :
     Implemented the application using Spring Boot
   	Covered the mentioned requirements
-   	Added the Logger details for Audit purposes
-  	Used collections to implement the functionality, but provided the DAO design to extend it to a database
   	Used Mockito Framework to cover unit testing for service class
     
  Bonus :
