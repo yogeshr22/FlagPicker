@@ -20,3 +20,9 @@ Coverage Of work :
    	Added the Logger details for Audit purposes
   	Used collections to implement the functionality, but provided the DAO design to extend it to a database
   	Used Mockito Framework to cover unit testing for service class
+    
+ Bonus :
+  1) Implemented the Mongo DB for Persistance and Retrieval
+  2) Implemented Spring Actuator to Monitor the application
+  3) Metrics Service to show the search requests
+  4) Audit logging has been implemented
