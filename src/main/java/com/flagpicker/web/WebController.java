@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flagpicker.config.MongoDBRepository;
+import com.flagpicker.dto.ContinentDTO;
 import com.flagpicker.dto.CountryDTO;
-import com.flagpicker.dto.FlagDTO;
 import com.flagpicker.dto.ResponseDTO;
 import com.flagpicker.service.FlagService;
 import com.flagpicker.utils.Constants.ReturnCode;
@@ -31,29 +31,40 @@ public class WebController {
 
   @Autowired
   private FlagService flagService;
+  
+  @Autowired
+  private MongoDBRepository dbRepository;
+
+  @PostConstruct
+  private void persistFlagDetails() {
+    try {
+      flagService.persistFlagDetails();
+    } catch (Exception e) {
+      LOGGER.error("Error occured! while persisting the Flag Details!", e);
+    }
+  }
 
   /**
-   * Captures the Flag details, country and continent
+   * Return all the Flag details
    *   
    */
-  @RequestMapping(value = "/uploadflags", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-  public ResponseDTO<String> getAllFlagDetails(@Valid @RequestBody List<FlagDTO> flagDTO) {
-    ResponseDTO<String> responseDTO = new ResponseDTO<>();
+  @RequestMapping(value = "/all", method = RequestMethod.GET, produces = "application/json")
+  public ResponseDTO<List<ContinentDTO>> getAllFlagDetails() {
+    ResponseDTO<List<ContinentDTO>> responseDTO = new ResponseDTO<>();
     try {
       LOGGER.info("Request received to collect the flag details!!");
-      flagService.processFlagDetails(flagDTO);
-      responseDTO.setResponse("Flag Details Successfully Uploaded!");
+      responseDTO.setResponse(flagService.getAllFlagDetails());
       responseDTO.setReturnCode(ReturnCode.SUCCESS);
     } catch (Exception e) {
-      responseDTO.setResponse("Error Occured!");
       responseDTO.setReturnCode(ReturnCode.ERROR);
+      LOGGER.error("Error Occured! {}", e);
     }
     return responseDTO;
   }
 
   /**
-   *  Search the Flag repo and returns the appropriate results
-   *   
+   *  Search the Flag Repo and returns the appropriate results. The search is generic for both continent and country.
+   *   @param keyword
    */
   @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
   public ResponseDTO<List<CountryDTO>> search(@RequestParam String keyword) {
@@ -68,6 +79,7 @@ public class WebController {
         responseDTO.setReturnCode(ReturnCode.DATANOTFOUND);
     } catch (Exception e) {
       responseDTO.setReturnCode(ReturnCode.ERROR);
+      LOGGER.error("Error Occured! {}", e);
     }
     return responseDTO;
   }
@@ -91,6 +103,7 @@ public class WebController {
         responseDTO.setReturnCode(ReturnCode.DATANOTFOUND);
     } catch (Exception e) {
       responseDTO.setReturnCode(ReturnCode.ERROR);
+      LOGGER.error("Error Occured! {}", e);
     }
     return responseDTO;
   }
